@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function App() {
 
@@ -21,9 +21,24 @@ function App() {
 
   const eventButtonSubmit = (event) => {
     event.preventDefault()
+    if (input === '') return
     addMessage('user', input)
     setInput('')
   }
+  
+  const timerBot = delay => setTimeout(addMessage, delay, 'bot', 'Hello!')
+
+  useEffect(() => {
+    clearTimeout(timerBot)
+
+    if (messagelist.length === 0) return
+    
+    const lastMessage = messagelist[messagelist.length - 1]
+    if (lastMessage.author !== 'bot') {
+      timerBot(4000)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messagelist])
 
   return (
     <div className="App">
@@ -38,8 +53,8 @@ function App() {
       </form>
       <ul>
         {
-          messagelist.map((message) => (
-            <li>
+          messagelist.map((message, index) => (
+            <li key={index}>
               {message.author}: {message.text}
             </li>
           ))
