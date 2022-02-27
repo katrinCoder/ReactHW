@@ -25,18 +25,16 @@ function App() {
     addMessage('user', input)
     setInput('')
   }
-  
-  const timerBot = delay => setTimeout(addMessage, delay, 'bot', 'Hello!')
 
   useEffect(() => {
-    clearTimeout(timerBot)
-
     if (messagelist.length === 0) return
     
     const lastMessage = messagelist[messagelist.length - 1]
-    if (lastMessage.author !== 'bot') {
-      timerBot(4000)
-    }
+    const timerBot = lastMessage.author !== 'bot' ? setTimeout(() => {addMessage('bot','Привет!')}, 1500) : ''
+
+    return () => {
+      clearTimeout(timerBot)
+  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagelist])
 
