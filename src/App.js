@@ -1,7 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Container, Paper, Button, TextField, Box, List, ListItem, IconButton, ListItemAvatar, Avatar, ListItemText } from '@mui/material'
+import CommentIcon from '@mui/icons-material/Comment'
+import { nanoid } from 'nanoid'
 
 function App() {
-
+  const textInput = useRef(null);
+  
+  const chatList = [
+    {
+      name: 'FoodChat',
+      id: nanoid()
+    },
+    {
+      name: 'SportChat',
+      id: nanoid()
+    },
+    {
+      name: 'TravelChat',
+      id: nanoid()
+    },
+    {
+      name: 'EducationChat',
+      id: nanoid()
+    },
+    {
+      name: 'MusicChat',
+      id: nanoid()
+    }
+  ]
+  
   const [messagelist, setMessageList] = useState([])
   const [input, setInput] = useState('')
   
@@ -9,8 +36,9 @@ function App() {
     const newMessageList = [...messagelist]
     const newMessage = {
       author,
-      text
+      text,
     }
+    newMessage.id = nanoid()
     newMessageList.push(newMessage)
     setMessageList(newMessageList)
   }
@@ -38,27 +66,78 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagelist])
 
+  useEffect(() => {
+    textInput.current.focus()
+  })
+
   return (
-    <div className="App">
-      <form onSubmit={eventButtonSubmit}>
-        <input
-          onChange={eventChangeMessage}
-          value={input}
-          type='text'
-          placeholder='Введите сообщение:'>
-        </input>
-        <button>Отправить</button>
-      </form>
-      <ul>
+    <Container maxWidth="md" className="App"
+      sx={{ 
+        display: 'flex',
+        alignItems: 'center',
+        height: '100vh'
+      }}  
+    >
+      <List>
         {
-          messagelist.map((message, index) => (
-            <li key={index}>
-              {message.author}: {message.text}
-            </li>
+          chatList.map((chat) => (
+            <ListItem key={chat.id}>
+              {chat.name}
+            </ListItem>
           ))
         }  
-      </ul>
-    </div>
+      </List>
+      <Paper 
+        sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: 2,
+          height: '80vh',
+          width: '100%'
+        }} 
+        elevation={5}
+      >
+        <Box component={'form'} onSubmit={eventButtonSubmit}>
+          <TextField
+            sx={{ width: '65%' }}
+            onChange={eventChangeMessage}
+            value={input}
+            inputRef={textInput}
+            type='text'
+            id='outlined-textarea'
+            label='Сообщение'
+            placeholder='Введите сообщение:'
+            multiline
+          />
+          <Button sx={{ verticalAlign: 'bottom', marginLeft: '10px' }} type='submit' variant="contained">Отправить</Button>
+        </Box>
+        <List sx={{
+            height: '90%',
+            itemSize: '10',
+            overflow: 'auto'
+          }}
+        >
+          {
+            messagelist.map((message) => (
+              <ListItem key={message.id}
+                disableGutters
+                secondaryAction={
+                  <IconButton>
+                    <CommentIcon />
+                  </IconButton>
+                }>
+
+                <ListItemAvatar>
+                  <Avatar sx={{ bgcolor: `#eeb${message.author.charCodeAt(0)}` }}>{message.author}</Avatar>
+                </ListItemAvatar>
+                <ListItemText id={message.id} primary={message.text} />
+              </ListItem>
+            ))
+          }  
+        </List>
+      </Paper>
+    </Container>
   );
 }
 
