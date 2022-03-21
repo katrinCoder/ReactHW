@@ -1,43 +1,37 @@
-import { nanoid } from 'nanoid'
-import { List, ListItem } from '@mui/material'
+import { List, ListItem, Button, TextField, Switch, FormControlLabel } from '@mui/material'
+import { Link } from 'react-router-dom'
 
+export const ChatList = ({ chatList, deleteChat, addChat, newChatName }) => {
 
-export const ChatList = () => {
+  let showChangeChat = false
 
-    const chatList = [
+  return (
+    <List>
+      {
+        Object.keys(chatList).map((id, chat) => (
+          <ListItem key={chatList[id].id}>
+            <Link to={`/chats/${id}`}>
+              {chatList[id].name}
+            </Link>
+            <Button style={{ display: showChangeChat ? "block" : "none" }} onClick={() => deleteChat(id)}>Удалить</Button>
+          </ListItem>
+        ))
+      }
+      <div style={{ display: showChangeChat ? "block" : "none" }}>
+      <TextField     
+          value={newChatName}
+          type='text'
+          label='Новый чат'
+          placeholder='Введите название чата:'
+        />
+        <Button onClick={() => addChat(newChatName)}>Добавить</Button>
+      </div>
+      <FormControlLabel control=
         {
-          name: 'FoodChat',
-          id: nanoid()
-        },
-        {
-          name: 'SportChat',
-          id: nanoid()
-        },
-        {
-          name: 'TravelChat',
-          id: nanoid()
-        },
-        {
-          name: 'EducationChat',
-          id: nanoid()
-        },
-        {
-          name: 'MusicChat',
-          id: nanoid()
-        }
-      ]
-
-    return (
-        <List>
-        {
-          chatList.map((chat) => (
-            <ListItem key={chat.id}>
-              {chat.name}
-            </ListItem>
-          ))
-        }  
-        </List>
-    )
+          <Switch onChange={() => {showChangeChat = !showChangeChat}} />
+        } label="Изменить чаты" />
+    </List>
+  )
 }
 
 export default ChatList

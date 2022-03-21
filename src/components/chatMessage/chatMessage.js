@@ -4,7 +4,7 @@ import CommentIcon from '@mui/icons-material/Comment'
 import { nanoid } from 'nanoid'
 
 
-export const Chat = (props) => {
+export const ChatMessage = (props) => {
     
     const textInput = useRef(null);
     const [messagelist, setMessageList] = useState([])
@@ -52,7 +52,7 @@ export const Chat = (props) => {
         <Container maxWidth="sm" className="App"
             sx={{ 
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'top',
                 height: '100vh'
             }}  
         >
@@ -110,4 +110,4 @@ export const Chat = (props) => {
     )
 }
 
-export default Chat
+export default ChatMessage

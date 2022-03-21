@@ -1,36 +1,79 @@
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
-import { Home, Profile, Chats } from './routes'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { MainMenu } from './components';
+import { Home, Profile, Chats, Chat, NoChat } from './routes'
+import { nanoid } from 'nanoid'
+import { useState } from 'react'
+
+const initChatList = {
+  id1: {
+      name: 'FoodChat',
+      id: nanoid()
+    },
+  id2: {
+      name: 'SportChat',
+      id: nanoid()
+    },
+  id3: {
+      name: 'TravelChat',
+      id: nanoid()
+    },
+  id4: {
+      name: 'EducationChat',
+      id: nanoid()
+    },
+  id5: {
+      name: 'MusicChat',
+      id: nanoid()
+    }
+}
 
 function App() {
 
+  const [chatList, setChats] = useState(initChatList);
+
+  const deleteChat = (id) => {
+    delete chatList[id]
+    console.log(chatList)
+    setChats(chatList)
+  }
+
+  const addChat = (newChatName) => {
+    const newChatList = {...chatList}
+    console.log(newChatList)
+    const newChat = { 
+      newChatName: {
+        name: 'newChatName',
+        id: nanoid()
+      }
+    }
+    console.log(newChat)
+    Object.keys(newChatList).push(newChat)
+    setChats(newChatList)
+    console.log(chatList)
+  }
+
   return (
     <Router>
-      <header>
-       <ul>
-         <li>
-           <Link to="/profile">profile</Link>
-         </li>
-
-         <li>
-           <Link to="/chats">chats</Link>
-         </li>
-
-         <li>
-           <Link to="/">Home</Link>
-         </li>
-       </ul>
-     </header>
-      <Routes>
-        <Route exact path="/" element={<Home/>}/>
-        <Route path="/profile" element={<Profile/>}/>
-        <Route exact path="/chats" element={<Chats/>}/>
-        <Route path='*' element={<Home/>}/>
-      </Routes>
-   </Router>
+      <MainMenu/>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/profile" component={Profile}/>
+        <Route path="/chats">
+          <Chats chatList={chatList} deleteChat={deleteChat} addChat={addChat}>
+            <Switch>
+              <Route path="/chats/:chatId">
+                <Chat chatList={chatList}/>
+              </Route>
+              <Route path="/chats/:chatId" component={NoChat}/>
+            </Switch>
+          </Chats>  
+        </Route>
+        <Route path='*'>
+          <Home/>
+        </Route>
+      </Switch>
+    </Router>
   )
-  // return (
-
-  // )
 }
 
 export default App;
