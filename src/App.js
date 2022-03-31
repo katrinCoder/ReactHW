@@ -3,6 +3,8 @@ import { MainMenu } from './components';
 import { Home, Profile, Chats, Chat, NoChat } from './routes'
 import { nanoid } from 'nanoid'
 import { useState } from 'react'
+import { Provider } from 'react-redux'
+import { store } from './store'
 
 const initChatList = {
   id1: {
@@ -53,26 +55,28 @@ function App() {
   }
 
   return (
-    <Router>
-      <MainMenu/>
-      <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route path="/profile" component={Profile}/>
-        <Route path="/chats">
-          <Chats chatList={chatList} deleteChat={deleteChat} addChat={addChat}>
-            <Switch>
-              <Route path="/chats/:chatId">
-                <Chat chatList={chatList}/>
-              </Route>
-              <Route path="/chats/:chatId" component={NoChat}/>
-            </Switch>
-          </Chats>  
-        </Route>
-        <Route path='*'>
-          <Home/>
-        </Route>
-      </Switch>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <MainMenu/>
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route path="/profile" component={Profile}/>
+          <Route path="/chats">
+            <Chats chatList={chatList} deleteChat={deleteChat} addChat={addChat}>
+              <Switch>
+                <Route path="/chats/:chatId">
+                  <Chat chatList={chatList}/>
+                </Route>
+                <Route path="/chats/:chatId" component={NoChat}/>
+              </Switch>
+            </Chats>  
+          </Route>
+          <Route path='*'>
+            <Home/>
+          </Route>
+        </Switch>
+      </Router>
+    </Provider>
   )
 }
 
